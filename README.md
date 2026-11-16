@@ -1,4 +1,4 @@
-# Chamila website (taste-skill redesign)
+# Kithul House website (taste-skill redesign)
 
 Open `index.html` through a small local server (the page uses JavaScript modules, which browsers block from a double-clicked file):
 

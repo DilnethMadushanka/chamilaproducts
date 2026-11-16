@@ -3,21 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Chamila: kithul pani and Ceylon tea from Sri Lanka</title>
+<title>Kithul House: kithul pani and Ceylon tea from Sri Lanka</title>
 <meta name="description" content="Kithul treacle boiled over a wood fire, kithul jaggery and loose-leaf black and green tea, ordered on WhatsApp.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Chamila: kithul pani and Ceylon tea from Sri Lanka">
+<meta property="og:title" content="Kithul House: kithul pani and Ceylon tea from Sri Lanka">
 <meta property="og:description" content="Kithul treacle, kithul jaggery and loose-leaf Ceylon tea, ordered on WhatsApp.">
 <meta property="og:image" content="share.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="favicon.png">
 <meta name="theme-color" content="#f7f3ec">
 <!-- <link rel="canonical" href="https://[the client's domain]/"> : the domain is not known yet -->
 <meta name="site-kind" content="other">
 <meta name="page-type" content="product">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600&family=Rethink+Sans:wght@400..600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..700,0..100,0..1&family=Figtree:wght@400..600&family=Noto+Sans+Sinhala:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/system.css">
 <link rel="stylesheet" href="assets/ui/cards.css">
 <link rel="stylesheet" href="assets/motion/motion.css">
@@ -30,11 +31,12 @@
   --p-accent: #7a4a2c; --p-accent-ink: #ffffff; --p-action: #7a4a2c; --p-action-ink: #ffffff;
   --p-inv-bg: #2a2622; --p-inv-surface: #36322e; --p-inv-ink: #f7f3ec; --p-inv-muted: #a29e98;
   --p-inv-accent: #f7f3ec; --p-inv-accent-ink: #2a2622; --p-inv-action: #f7f3ec; --p-inv-action-ink: #2a2622;
-  --font-display: "Zilla Slab", Georgia, serif;
-  --font-text: "Rethink Sans", system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-text: "Figtree", system-ui, sans-serif;
   --display-weight: 400;
-  --display-tracking: -0.018em;
-  --display-tracking-xl: -0.024em;
+  --display-tracking: -0.02em;
+  --display-tracking-xl: -0.028em;
+  --display-axes: 'SOFT' 30, 'WONK' 0;
   --ly-scale: 1.02;
 }
 </style>
@@ -44,10 +46,48 @@
 <link rel="modulepreload" href="assets/moments/moments.js">
 <link rel="modulepreload" href="assets/moments/lib.js">
 <link rel="modulepreload" href="assets/moments/photo-chapters/moment.js">
-<link rel="modulepreload" href="assets/moments/word-highlight/moment.js">
 <!-- page CSS: the order list's amount steppers, the range's square first row, the tea pictures -->
 <style>
-  #range .tile { --tile-ratio: 1 / 1; }
+  #range .tile { --tile-ratio: 5 / 4; }
+  #range .group + .grid > .tile { --tile-ratio: 4 / 3; }
+  .prod { gap: var(--s-3); }
+  .prod__si { font: 500 14px/1.2 "Noto Sans Sinhala", var(--font-text); color: var(--action); margin-top: var(--s-1); }
+  .prod .tile__head > h3 { font: var(--display-weight) 24px/1.15 var(--font-display); letter-spacing: -0.01em; }
+  .prod .tile__price { font: 500 var(--t-body)/1 var(--font-text); }
+  .prod__buy { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); flex-wrap: wrap; }
+  .chips { display: flex; gap: var(--s-2); }
+  .chip { height: 44px; padding: 0 var(--s-4); border-radius: var(--r-btn); border: 1px solid var(--line-strong); background: var(--bg); color: var(--ink); font: 500 var(--t-small)/1 var(--font-text); cursor: pointer; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .chip:hover { border-color: var(--ink); }
+  .chip.is-on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  @media (max-width: 1023px) { .prod .prod__add.btn { background: var(--bg); border: 1px solid color-mix(in oklab, var(--ink) 40%, transparent); color: var(--ink); } .prod .prod__add.btn:hover { border-color: var(--ink); } }
+  .prod .prod__add.btn.is-added { border-color: var(--action); color: var(--action); }
+  .order-empty { color: var(--ink); padding-block: var(--s-5); border-bottom: 1px solid var(--line); }
+  .order-empty[hidden] { display: none; }
+  .order-list { max-height: 360px; overflow-y: auto; }
+  @media (max-width: 1023px) { #order .grid.fill > .frame--fill { flex: none; aspect-ratio: 4 / 3; height: auto; min-height: 0; } }
+  @media (max-width: 1023px) { #range .tile, #range .group + .grid > .tile { --tile-ratio: 4 / 3; } }
+  /* the phone and tablet menu: a side drawer with the range as picture cards */
+  @media (max-width: 1023px) {
+    .nav.is-open::after { content: ""; position: fixed; inset: var(--nav) 0 0 0; background: color-mix(in oklab, var(--p-ink) 45%, transparent); z-index: -1; animation: drawerFade 300ms var(--ease) both; }
+    .nav.is-open .nav__links { left: auto; width: min(100%, 420px); border-left: 1px solid var(--line); padding: var(--s-6) var(--s-6) calc(var(--btn-h) * 2 + 64px); animation: drawerIn 380ms var(--ease) both; box-shadow: none; }
+    .nav.is-open .nav__item { border-bottom: 1px solid var(--line); }
+    .nav.is-open .nav__link { height: 64px; font: var(--display-weight) 30px/1 var(--font-display); letter-spacing: -0.02em; }
+    .nav.is-open .nav__expand { display: none; }
+    .nav.is-open .nav__item .nav__menu { display: block; padding-bottom: var(--s-5); }
+    .nav.is-open .nav__menu .grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); }
+    .nav.is-open .nav__menu .menu-card { grid-column: auto; gap: var(--s-1); padding: 0; }
+    .nav.is-open .menu-card .panel { display: block; --ratio: 75%; border-radius: var(--r-md); overflow: hidden; }
+    .nav.is-open .menu-card .t-card { font: 500 var(--t-small)/1.3 var(--font-text); margin-top: var(--s-2); }
+    .nav.is-open .menu-card .t-small { font-size: 13px; }
+    .nav.is-open .nav__actions { left: auto; width: min(100%, 420px); border-left: 1px solid var(--line); animation: drawerIn 380ms var(--ease) both; }
+    @keyframes drawerIn { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+    @keyframes drawerFade { from { opacity: 0; } to { opacity: 1; } }
+  }
+  @media (prefers-reduced-motion: reduce) { .nav.is-open .nav__links, .nav.is-open .nav__actions, .nav.is-open::after { animation: none; } }
+  .closing .close__word { line-height: 1; padding-top: 0.06em; }
+  .nav__logo .brand-logo { width: 40px; height: 40px; flex: none; object-fit: contain; }
+  .footer .nav__logo .brand-logo { width: 48px; height: 48px; }
+  @media (max-width: 639px) { .nav .nav__logo .brand-logo { width: 32px; height: 32px; } .closing .close__word { font-size: clamp(36px, 12vw, 56px); line-height: 1; white-space: nowrap; } }
   .order-list > li { padding-block: var(--s-2); align-items: center; }
   .order-list > li:first-child { padding-top: 0; }
   #tea .frame--a { --ratio: 66%; }
@@ -58,7 +98,7 @@
   @media (max-width: 639px) {
     #kithul .frame--fill { flex: none; height: auto; min-height: 0; aspect-ratio: 3 / 2; }
     #order .frame--fill { flex: none; height: auto; min-height: 0; aspect-ratio: 1 / 2; }
-    #range .group + .grid > .tile { grid-column: auto / span 6; min-width: 0; }
+    #range .tile { grid-column: 1 / -1 !important; min-width: 0; }
     #range .tile__head { flex-wrap: wrap; gap: 0 var(--s-2); }
   }
   #kithul .frame__img, #tea .frame__img, #order .frame__img { object-position: var(--pos, 50% 50%); }
@@ -76,13 +116,14 @@
 <!-- type: product (site-kind other)
      deal: hero photo, nav nav-split, close close-word, footer footer-columns, rhythm brand-band, buttons pill, mark arc, grounds none
      palette warm-paper-walnut: the warm paper ground and walnut brown answer the dark treacle, the clay pots and the wood in the client's photographs
-     type zilla (the dealt first, archivo, is a wide technical face that fights the hand-made photographs)
-     moments: photo-chapters in #making, word-highlight in #ritual -->
+     type fraunces (the client asked for nicer fonts; the kit lists it for food brands)
+     logo: the client's badge (images/logo.png) in place of the dealt mark
+     moments: photo-chapters in #making (the word-highlight statement was taken out: on a phone it left a near-empty screen) -->
 
 <header class="nav nav--split">
   <div class="wrap nav__bar">
     <a class="skip-link" href="#top">Skip to content</a>
-    <a class="nav__logo" href="#top"><span class="mark" data-mark="arc" aria-hidden="true"></span>Chamila</a>
+    <a class="nav__logo" href="#top"><img class="brand-logo" src="images/logo.png" alt="" width="40" height="40">Kithul House</a>
     <nav class="nav__links" aria-label="Main">
       <div class="nav__item">
         <a class="nav__link" href="#range">Range <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -140,37 +181,47 @@
     <div class="wrap">
       <div class="group">
         <div class="section-head">
-          <h2 id="range-h">Five things we sell. <span class="muted">Two from the kithul palm, two teas and a box of all four.</span></h2>
+          <h2 id="range-h">Five things we sell. <span class="muted">Pick a size and add it to your order list.</span></h2>
         </div>
         <div class="grid">
-          <a class="tile tile--sq span-4" href="#order">
-            <div class="tile__media"><img src="images/04-product-kithul-treacle.jpg" alt="A glass bottle of dark kithul pani with a cork tied in twine" loading="lazy" data-source="client" data-subject="kithul pani bottle"></div>
-            <div class="tile__head"><h3>Kithul pani</h3><span class="tile__price" data-assumed>from LKR 1,850</span></div>
-            <p class="tile__facts">Bottles of 350 ml and 750 ml</p>
-          </a>
-          <a class="tile tile--sq span-4" href="#order">
-            <div class="tile__media"><img src="images/05-product-kithul-jaggery.jpg" alt="Round pieces of kithul hakuru set in halved coconut shells, one broken open" loading="lazy" data-source="client" data-subject="kithul hakuru"></div>
-            <div class="tile__head"><h3>Kithul hakuru</h3><span class="tile__price" data-assumed>from LKR 1,250</span></div>
-            <p class="tile__facts">Set in coconut shells, 250 g and 500 g</p>
-          </a>
-          <a class="tile tile--sq span-4" href="#order">
-            <div class="tile__media"><img src="images/09-product-gift-box.jpg" alt="An open gift box holding kithul pani, hakuru in a banana leaf and two tea tins" loading="lazy" data-source="client" data-subject="gift box"></div>
-            <div class="tile__head"><h3>Gift box</h3><span class="tile__price" data-assumed>LKR 6,950</span></div>
-            <p class="tile__facts">Pani, hakuru, black tea and green tea</p>
-          </a>
+        <article class="tile prod span-4" data-prod="pani" data-name="Kithul pani">
+          <a class="tile__media" href="#order" tabindex="-1" aria-hidden="true"><img src="images/04-product-kithul-treacle.jpg" alt="" loading="lazy" data-source="client" data-subject="kithul pani bottle"></a>
+          <p class="prod__si" lang="si">කිතුල් පැණි</p>
+          <div class="tile__head"><h3>Kithul pani</h3><span class="tile__price" data-assumed>LKR 1,850</span></div>
+          <p class="tile__facts">Thick, dark and smoky, in glass bottles</p>
+          <div class="prod__buy"><div class="chips" role="group" aria-label="Kithul pani size"><button type="button" class="chip is-on" aria-pressed="true" data-size="350 ml" data-price="1850">350 ml</button><button type="button" class="chip" aria-pressed="false" data-size="750 ml" data-price="3450">750 ml</button></div><button type="button" class="btn btn--secondary prod__add">Add to list</button></div>
+        </article>
+        <article class="tile prod span-4" data-prod="hakuru" data-name="Kithul hakuru">
+          <a class="tile__media" href="#order" tabindex="-1" aria-hidden="true"><img src="images/05-product-kithul-jaggery.jpg" alt="" loading="lazy" data-source="client" data-subject="kithul hakuru"></a>
+          <p class="prod__si" lang="si">කිතුල් හකුරු</p>
+          <div class="tile__head"><h3>Kithul hakuru</h3><span class="tile__price" data-assumed>LKR 1,250</span></div>
+          <p class="tile__facts">Soft jaggery set in coconut shells</p>
+          <div class="prod__buy"><div class="chips" role="group" aria-label="Kithul hakuru size"><button type="button" class="chip is-on" aria-pressed="true" data-size="250 g" data-price="1250">250 g</button><button type="button" class="chip" aria-pressed="false" data-size="500 g" data-price="2300">500 g</button></div><button type="button" class="btn btn--secondary prod__add">Add to list</button></div>
+        </article>
+        <article class="tile prod span-4" data-prod="gift" data-name="Kithul gift box">
+          <a class="tile__media" href="#order" tabindex="-1" aria-hidden="true"><img src="images/09-product-gift-box.jpg" alt="" loading="lazy" data-source="client" data-subject="gift box"></a>
+          <p class="prod__si" lang="si">තෑගි පෙට්ටිය</p>
+          <div class="tile__head"><h3>Kithul gift box</h3><span class="tile__price" data-assumed>LKR 6,950</span></div>
+          <p class="tile__facts">Pani, hakuru, black tea and green tea</p>
+          <div class="prod__buy"><div class="chips" role="group" aria-label="Kithul gift box size"><button type="button" class="chip is-on" aria-pressed="true" data-size="One box" data-price="6950">One box</button></div><button type="button" class="btn btn--secondary prod__add">Add to list</button></div>
+        </article>
         </div>
       </div>
       <div class="grid">
-        <a class="tile span-6" href="#order">
-          <div class="tile__media"><img src="images/06-product-black-tea.jpg" alt="A black tin of loose black tea beside a glass cup of red-brown tea" loading="lazy" data-source="client" data-subject="black tea"></div>
-          <div class="tile__head"><h3>Black tea</h3><span class="tile__price" data-assumed>from LKR 1,100</span></div>
-          <p class="tile__facts">Loose leaf, strong enough for milk tea, 100 g and 250 g</p>
-        </a>
-        <a class="tile span-6" href="#order">
-          <div class="tile__media"><img src="images/07-product-green-tea.jpg" alt="A green tin of rolled green tea beside a glass cup of pale tea" loading="lazy" data-source="client" data-subject="green tea"></div>
-          <div class="tile__head"><h3>Green tea</h3><span class="tile__price" data-assumed>from LKR 1,450</span></div>
-          <p class="tile__facts">Hand-rolled leaves for a lighter cup, 100 g and 200 g</p>
-        </a>
+        <article class="tile prod span-6" data-prod="black" data-name="Black tea">
+          <a class="tile__media" href="#order" tabindex="-1" aria-hidden="true"><img src="images/06-product-black-tea.jpg" alt="" loading="lazy" data-source="client" data-subject="black tea"></a>
+          <p class="prod__si" lang="si">කළු තේ</p>
+          <div class="tile__head"><h3>Black tea</h3><span class="tile__price" data-assumed>LKR 1,100</span></div>
+          <p class="tile__facts">Loose leaf, strong enough for milk tea</p>
+          <div class="prod__buy"><div class="chips" role="group" aria-label="Black tea size"><button type="button" class="chip is-on" aria-pressed="true" data-size="100 g" data-price="1100">100 g</button><button type="button" class="chip" aria-pressed="false" data-size="250 g" data-price="2450">250 g</button></div><button type="button" class="btn btn--secondary prod__add">Add to list</button></div>
+        </article>
+        <article class="tile prod span-6" data-prod="green" data-name="Green tea">
+          <a class="tile__media" href="#order" tabindex="-1" aria-hidden="true"><img src="images/07-product-green-tea.jpg" alt="" loading="lazy" data-source="client" data-subject="green tea"></a>
+          <p class="prod__si" lang="si">කොළ තේ</p>
+          <div class="tile__head"><h3>Green tea</h3><span class="tile__price" data-assumed>LKR 1,450</span></div>
+          <p class="tile__facts">Hand-rolled leaves for a lighter cup</p>
+          <div class="prod__buy"><div class="chips" role="group" aria-label="Green tea size"><button type="button" class="chip is-on" aria-pressed="true" data-size="100 g" data-price="1450">100 g</button><button type="button" class="chip" aria-pressed="false" data-size="200 g" data-price="2650">200 g</button></div><button type="button" class="btn btn--secondary prod__add">Add to list</button></div>
+        </article>
       </div>
     </div>
   </section>
@@ -203,7 +254,7 @@
         </li>
         <li class="mo-ph__ch">
           <figure class="mo-ph__pic"><img src="images/01-hero-kithul-pour.jpg" alt="Thick kithul pani pouring from a wooden spoon into a clay pot" width="1024" height="1536"></figure>
-          <h3>Ready to pour</h3>
+          <h3>Pani ready to pour</h3>
           <p>Cooled, it pours slowly from a spoon. Then it goes into bottles and is sealed.</p>
         </li>
       </ol>
@@ -222,30 +273,17 @@
     </div>
   </section>
 
-  <section class="section statement" id="ritual" data-moment="word-highlight" aria-label="How it is eaten">
-    <div class="wrap">
-      <p class="t-label">How it is eaten</p>
-      <p class="mo-wh__text">Pour kithul pani over buffalo curd or hot hoppers, and drink your tea with a piece of <strong>hakuru</strong> on the side, the way it is done in Sri Lankan homes.</p>
-    </div>
-  </section>
-
-  <section class="section" id="order" style="--hm: 2" aria-labelledby="order-h">
+  <section class="section" id="order" aria-labelledby="order-h">
     <div class="wrap">
       <div class="section-head">
-        <h2 id="order-h">Your order list. <span class="muted">Pick the amounts, then send the list to us on WhatsApp.</span></h2>
+        <h2 id="order-h">Your order list. <span class="muted">Check the amounts, then send the list to us on WhatsApp.</span></h2>
       </div>
       <div class="grid fill">
         <div class="span-6 order">
-          <ul class="rows order-list" id="orderList">
-            <li data-item="Kithul pani 350 ml" data-price="1850"><span class="rows__name">Kithul pani<small>350 ml, LKR 1,850</small></span><span class="rows__value"><span class="qty"><button type="button" data-step="-1" aria-label="One less kithul pani 350 ml">−</button><output>0</output><button type="button" data-step="1" aria-label="One more kithul pani 350 ml">+</button></span></span></li>
-            <li data-item="Kithul pani 750 ml" data-price="3450"><span class="rows__name">Kithul pani<small>750 ml, LKR 3,450</small></span><span class="rows__value"><span class="qty"><button type="button" data-step="-1" aria-label="One less kithul pani 750 ml">−</button><output>0</output><button type="button" data-step="1" aria-label="One more kithul pani 750 ml">+</button></span></span></li>
-            <li data-item="Kithul hakuru 250 g" data-price="1250"><span class="rows__name">Kithul hakuru<small>250 g, LKR 1,250</small></span><span class="rows__value"><span class="qty"><button type="button" data-step="-1" aria-label="One less kithul hakuru">−</button><output>0</output><button type="button" data-step="1" aria-label="One more kithul hakuru">+</button></span></span></li>
-            <li data-item="Black tea 100 g" data-price="1100"><span class="rows__name">Black tea<small>100 g, LKR 1,100</small></span><span class="rows__value"><span class="qty"><button type="button" data-step="-1" aria-label="One less black tea">−</button><output>0</output><button type="button" data-step="1" aria-label="One more black tea">+</button></span></span></li>
-            <li data-item="Green tea 100 g" data-price="1450"><span class="rows__name">Green tea<small>100 g, LKR 1,450</small></span><span class="rows__value"><span class="qty"><button type="button" data-step="-1" aria-label="One less green tea">−</button><output>0</output><button type="button" data-step="1" aria-label="One more green tea">+</button></span></span></li>
-            <li data-item="Gift box" data-price="6950"><span class="rows__name">Gift box<small>Pani, hakuru and two teas</small></span><span class="rows__value"><span class="qty"><button type="button" data-step="-1" aria-label="One less gift box">−</button><output>0</output><button type="button" data-step="1" aria-label="One more gift box">+</button></span></span></li>
-          </ul>
+          <ul class="rows order-list" id="orderList" aria-live="polite"></ul>
+          <p class="order-empty" id="orderEmpty">Your list is empty. Add kithul pani, hakuru or tea from <a class="link" href="#range">the range</a>.</p>
           <p class="order-total"><span>Total</span><span id="orderTotal">LKR 0</span></p>
-          <div class="btn-row"><a class="btn btn--primary" id="orderSend" href="https://wa.me/?text=Hello%20Chamila%2C%20I%20would%20like%20to%20order%3A" target="_blank" rel="noopener">Order on WhatsApp</a></div>
+          <div class="btn-row"><a class="btn btn--primary" id="orderSend" href="https://wa.me/?text=Hello%20Kithul%20House%2C%20I%20would%20like%20to%20order%3A" target="_blank" rel="noopener">Order on WhatsApp</a></div>
         </div>
         <div class="frame frame--photo frame--fill span-6 start-7"><img class="frame__img" src="images/13-process-packing.jpg" alt="Hands tying twine round the cork of a kithul pani bottle, with filled bottles and tea tins behind" style="--pos: 60% 50%" loading="lazy" data-source="client" data-subject="bottles being sealed"></div>
       </div>
@@ -260,21 +298,21 @@
         <div><h2 id="close-h">Order pani and tea</h2><p class="t-lead">Send your list on WhatsApp. We reply with the total and the delivery cost.</p></div>
         <a class="btn btn--primary" href="#order">Order on WhatsApp<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
       </div>
-      <p class="close__word" aria-hidden="true">Chamila</p>
+      <p class="close__word" aria-hidden="true">Kithul House</p>
     </div>
     <div class="closing__links">
       <div class="grid">
         <div class="span-4 stack-4">
-          <a class="nav__logo" href="#top"><span class="mark" data-mark="arc" aria-hidden="true"></span>Chamila</a>
+          <a class="nav__logo" href="#top"><img class="brand-logo" src="images/logo.png" alt="" width="40" height="40">Kithul House</a>
           <p class="footer__lede">Kithul pani, hakuru and tea from Sri Lanka</p>
         </div>
         <div class="span-2 footer__col"><h3>Range</h3><ul><li><a href="#range">All five</a></li><li><a href="#order">Order list</a></li></ul></div>
-        <div class="span-2 footer__col"><h3>Kithul</h3><ul><li><a href="#kithul">The palm</a></li><li><a href="#ritual">How it is eaten</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Kithul</h3><ul><li><a href="#kithul">The palm</a></li><li><a href="#making">How it is made</a></li></ul></div>
         <div class="span-2 footer__col"><h3>Making</h3><ul><li><a href="#making">Three steps</a></li></ul></div>
         <div class="span-2 footer__col"><h3>Tea</h3><ul><li><a href="#tea">Black and green</a></li><li><a href="#contact">Contact</a></li></ul></div>
       </div>
       <div class="footer__legal">
-        <span>&copy; 2026 Chamila Products</span>
+        <span>&copy; 2026 Kithul House by Chamila Products</span>
         <div class="socials"></div>
       </div>
     </div>
@@ -289,27 +327,56 @@
 <script type="module" src="assets/motion/motion.js"></script>
 <script type="module" src="assets/layout/layout.js"></script>
 <script>
-  /* the order list: amounts, the total and the WhatsApp message (set WHATSAPP to the shop's number, country code first, no +) */
+  /* the catalogue and the order list. WHATSAPP: the shop's number, country code first, no + (empty: WhatsApp asks whom to send to) */
   (() => {
     const WHATSAPP = '';
-    const list = document.getElementById('orderList'), total = document.getElementById('orderTotal'), send = document.getElementById('orderSend');
     const lkr = n => 'LKR ' + n.toLocaleString('en-US');
-    function update() {
-      let sum = 0; const lines = [];
-      list.querySelectorAll('li').forEach(li => {
-        const q = +li.querySelector('output').value; const p = +li.dataset.price;
-        if (q) { sum += q * p; lines.push(`${li.dataset.item} x ${q} = ${lkr(q * p)}`); }
-      });
+    const list = document.getElementById('orderList'), empty = document.getElementById('orderEmpty');
+    const total = document.getElementById('orderTotal'), send = document.getElementById('orderSend');
+    const bar = document.querySelector('.actionbar .btn');
+    let order = [];
+    try { order = JSON.parse(localStorage.getItem('kh-order')) || []; } catch (e) {}
+    const save = () => { try { localStorage.setItem('kh-order', JSON.stringify(order)); } catch (e) {} };
+
+    function render() {
+      list.innerHTML = order.map((l, i) => `<li><span class="rows__name">${l.name}<small>${l.size}, ${lkr(l.price)} each</small></span><span class="rows__value"><span class="qty"><button type="button" data-i="${i}" data-step="-1" aria-label="One less ${l.name} ${l.size}">−</button><output>${l.q}</output><button type="button" data-i="${i}" data-step="1" aria-label="One more ${l.name} ${l.size}">+</button></span></span></li>`).join('');
+      empty.hidden = order.length > 0;
+      const sum = order.reduce((a, l) => a + l.q * l.price, 0), count = order.reduce((a, l) => a + l.q, 0);
       total.textContent = lkr(sum);
-      const text = 'Hello Chamila, I would like to order:\n' + (lines.length ? lines.join('\n') + '\nTotal: ' + lkr(sum) : '');
+      const lines = order.map(l => `${l.name} ${l.size} x ${l.q} = ${lkr(l.q * l.price)}`);
+      const text = 'Hello Kithul House, I would like to order:\n' + (lines.length ? lines.join('\n') + '\nTotal: ' + lkr(sum) : '');
       send.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`;
+      document.querySelectorAll('.prod').forEach(t => {
+        const n = order.filter(l => l.id === t.dataset.prod).reduce((a, l) => a + l.q, 0);
+        const b = t.querySelector('.prod__add'); b.classList.toggle('is-added', n > 0);
+        b.textContent = n ? `In your list: ${n}` : 'Add to list';
+      });
+      if (bar) bar.firstChild.textContent = count ? `Order on WhatsApp (${count}) ` : 'Order on WhatsApp ';
+      save();
     }
+    document.getElementById('range').addEventListener('click', e => {
+      const chip = e.target.closest('.chip');
+      if (chip) {
+        const t = chip.closest('.prod');
+        t.querySelectorAll('.chip').forEach(c => { c.classList.toggle('is-on', c === chip); c.setAttribute('aria-pressed', c === chip); });
+        t.querySelector('.tile__price').textContent = lkr(+chip.dataset.price);
+        return;
+      }
+      const add = e.target.closest('.prod__add');
+      if (add) {
+        const t = add.closest('.prod'), c = t.querySelector('.chip.is-on');
+        const line = order.find(l => l.id === t.dataset.prod && l.size === c.dataset.size);
+        if (line) line.q++; else order.push({ id: t.dataset.prod, name: t.dataset.name, size: c.dataset.size, price: +c.dataset.price, q: 1 });
+        render();
+      }
+    });
     list.addEventListener('click', e => {
       const b = e.target.closest('[data-step]'); if (!b) return;
-      const out = b.parentElement.querySelector('output');
-      out.value = Math.max(0, +out.value + +b.dataset.step); update();
+      const l = order[+b.dataset.i]; l.q += +b.dataset.step;
+      if (l.q < 1) order.splice(+b.dataset.i, 1);
+      render();
     });
-    update();
+    render();
   })();
 </script>
 </body>
